@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brewery", "Brewery\Brewery.csproj", "{2655E045-924E-4094-96CA-FF451055328A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{1C2F215A-0E92-442A-882F-879DC43B5471}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{DD8AC01E-FFE4-4B67-BF7B-A83E7A5DBCF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{2655E045-924E-4094-96CA-FF451055328A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2655E045-924E-4094-96CA-FF451055328A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2655E045-924E-4094-96CA-FF451055328A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C2F215A-0E92-442A-882F-879DC43B5471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C2F215A-0E92-442A-882F-879DC43B5471}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C2F215A-0E92-442A-882F-879DC43B5471}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C2F215A-0E92-442A-882F-879DC43B5471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD8AC01E-FFE4-4B67-BF7B-A83E7A5DBCF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD8AC01E-FFE4-4B67-BF7B-A83E7A5DBCF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD8AC01E-FFE4-4B67-BF7B-A83E7A5DBCF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD8AC01E-FFE4-4B67-BF7B-A83E7A5DBCF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
