@@ -1,0 +1,6 @@
+@Brewery_HostAddress = http://localhost:5062
+
+GET {{Brewery_HostAddress}}/beers/
+Accept: application/json
+
+###
