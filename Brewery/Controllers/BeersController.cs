@@ -1,4 +1,5 @@
-using Brewery.Domain;
+using DataLayer.Interface;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brewery.Controllers
@@ -7,22 +8,20 @@ namespace Brewery.Controllers
     [Route("[controller]")]
     public class BeersController : ControllerBase
     {
-        private static readonly Beer[] Beers =
-        [
-            new Beer{ Name="beer1", AlcoholContent = 1.0, Price = 1.0}
-        ];
-
+        private readonly IBeerRepository _beerRepository;
         private readonly ILogger<BeersController> _logger;
 
-        public BeersController(ILogger<BeersController> logger)
+        public BeersController(IBeerRepository beerRepository, ILogger<BeersController> logger)
         {
+            _beerRepository = beerRepository;
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<Beer> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Beers.ToArray();
+            var beers = await _beerRepository.GetAll();
+            return Ok(beers);
         }
     }
 }

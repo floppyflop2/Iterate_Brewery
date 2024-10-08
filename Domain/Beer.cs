@@ -1,14 +1,14 @@
-using Domain;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
-namespace Brewery.Domain
+namespace Domain;
+
+public class Beer : BaseEntity
 {
-    public class Beer
-    {
-        public Guid Id { get; set; }
-        public required string Name { get; set; }
-        public double AlcoholContent { get; set; }
-        public double Price { get; set; }
-
-        public required Brewer Brewer { get; set; }
-    }
+    public required string Name { get; set; }
+    public double AlcoholContent { get; set; }
+    public int BreweryId { get; set; }
+    public required Brewery Brewery { get; set; }
 }

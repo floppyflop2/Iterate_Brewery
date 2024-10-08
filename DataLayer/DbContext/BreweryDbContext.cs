@@ -1,15 +1,14 @@
-﻿using Brewery.Domain;
-using Domain;
+﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataLayer;
+namespace DataLayer.DbContext;
 
-public class BreweryDbContext : DbContext
+public class BreweryDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
-    public DbSet<Beer> Players { get; set; }
-    public DbSet<WholeSaler> WholeSalers { get; set; }
-    public DbSet<Brewer> Brewers { get; set; }
-    public DbSet<WholeSaler> BeerStock { get; set; }
+    public DbSet<Brewery> Breweries { get; set; }
+    public DbSet<Beer> Beers { get; set; }
+    public DbSet<Wholesaler> Wholesalers { get; set; }
+    public DbSet<WholesalerStock> WholesalerStocks { get; set; }
 
     public BreweryDbContext() : base()
     {
@@ -30,8 +29,17 @@ public class BreweryDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Beer>().HasOne(b => b.Brewer);
+        modelBuilder.Entity<WholesalerStock>()
+            .HasKey(e => new { e.WholesalerId, e.BeerId });
 
-        modelBuilder.Entity<Brewer>().HasMany(b => b.Beers);
+        modelBuilder.Entity<Brewery>()
+            .HasMany(b => b.Beers)
+            .WithOne(b => b.Brewery)
+            .HasForeignKey(b => b.BreweryId);
+
+        modelBuilder.Entity<Wholesaler>()
+            .HasMany(w => w.Stocks)
+            .WithOne(ws => ws.Wholesaler)
+            .HasForeignKey(ws => ws.WholesalerId).OnDelete(DeleteBehavior.Cascade);
     }
 }
