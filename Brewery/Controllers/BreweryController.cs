@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using DataLayer.Interface;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brewery.Controllers;
@@ -55,6 +56,22 @@ public class BreweryController : ControllerBase
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return NotFound(id);
         brewery.Beers.Add(beer);
+        await _breweryRepository.Update(brewery);
+        return Ok(brewery);
+    }
+
+    // POST api/<BreweryController>
+    [HttpPost("{id}/beers/{beerId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<int>> DeleteBeer(int id, int beerId)
+    {
+        var brewery = await _breweryRepository.GetById(id);
+        if (brewery == null) return BadRequest("Invalid Brewery id");
+        var beer = brewery.Beers.FirstOrDefault(b => b.Id == beerId);
+        if (beer == null) return BadRequest("Invalid Brewery id");
+
+        brewery.Beers.Remove(beer);
         await _breweryRepository.Update(brewery);
         return Ok(brewery);
     }
