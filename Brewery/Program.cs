@@ -1,9 +1,8 @@
+using System.Text.Json.Serialization;
 using DataLayer;
 using DataLayer.DbContext;
 using DataLayer.Interface;
-using System;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +18,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BreweryDbContext>(options =>
     options.UseInMemoryDatabase("InMemoryDb"));
 
-builder.Services.AddTransient(typeof(IAbstractRepository<>), typeof(AbstractRepository<>));
-builder.Services.AddTransient<IBeerRepository, BeerRepository>();
-builder.Services.AddTransient<IBreweryRepository, BreweryRepository>();
-builder.Services.AddTransient<IWholesalerRepository, WholesalerRepository>();
-builder.Services.AddTransient<IWholesalerStockRepository, WholesalerStockRepository>();
+builder.Services.AddScoped(typeof(IAbstractRepository<>), typeof(AbstractRepository<>));
+builder.Services.AddScoped<IBeerRepository, BeerRepository>();
+builder.Services.AddScoped<IBreweryRepository, BreweryRepository>();
+builder.Services.AddScoped<IWholesalerRepository, WholesalerRepository>();
+builder.Services.AddScoped<IWholesalerStockRepository, WholesalerStockRepository>();
 
 var app = builder.Build();
 
@@ -47,3 +46,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+//This has to be added to be referenced in the test project for the factory
+namespace Brewery
+{
+    public partial class Program { }
+}

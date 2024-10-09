@@ -26,7 +26,7 @@ public class AbstractRepository<T> : IAbstractRepository<T> where T : BaseEntity
     public async Task<T?> GetById(int id)
     {
         DbSet<T>? baseEntities = _breweryDbContext.Set<T>();
-        return await _entities.FindAsync(id);
+        return await baseEntities.FindAsync(id);
     }
 
     public async Task<T?> FirstOrDefault(Expression<Func<T?, bool>> predicate)

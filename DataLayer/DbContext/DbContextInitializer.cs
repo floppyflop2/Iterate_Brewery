@@ -13,15 +13,29 @@ public static class DbContextInitializer
         var random = new Random();
         context.Database.EnsureCreated();
 
-        if (context.Breweries.Any())
-        {
-            return;
-        }
+        if (InitializeBreweries(context)) return;
+        if (InitializeBeers(context, random)) return;
+        if (InitializeWholesalers(context, random)) return;
+    }
+
+    private static bool InitializeBreweries(BreweryDbContext context)
+    {
+        if (context.Breweries.Any()) return true;
 
         _breweries = [
             new Brewery { Name = "Brewery 1" }, new Brewery { Name = "Brewery 2" }, new Brewery { Name = "Brewery 3" }
         ];
+        foreach (var brewery in _breweries)
+        {
+            context.Breweries.Add(brewery);
+        }
+        context.SaveChanges();
+        return false;
+    }
 
+    private static bool InitializeBeers(BreweryDbContext context, Random random)
+    {
+        if (context.Beers.Any()) return true;
         _beers =
         [
             new Beer { AlcoholContent = 6.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer1" },
@@ -29,7 +43,17 @@ public static class DbContextInitializer
             new Beer { AlcoholContent = 5.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer3" },
 
         ];
+        foreach (var beer in _beers)
+        {
+            context.Beers.Add(beer);
+        }
+        context.SaveChanges();
+        return false;
+    }
 
+    private static bool InitializeWholesalers(BreweryDbContext context, Random random)
+    {
+        if (context.Wholesalers.Any()) return true;
         _wholesalers =
         [
             new Wholesaler
@@ -51,23 +75,12 @@ public static class DbContextInitializer
 
             }
         ];
-
-        foreach (var beer in _beers)
-        {
-            context.Beers.Add(beer);
-        }
-
-        foreach (var brewery in _breweries)
-        {
-            context.Breweries.Add(brewery);
-        }
-
         foreach (var wholesaler in _wholesalers)
         {
             wholesaler.Stocks.Add(new WholesalerStock { Beer = GetRandomBeer(), Quantity = random.Next(1, 100), Wholesaler = wholesaler });
         }
 
-        context.SaveChanges();
+        return false;
     }
 
     private static Beer GetRandomBeer()

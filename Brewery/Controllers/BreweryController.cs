@@ -4,7 +4,7 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brewery.Controllers;
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class BreweryController : ControllerBase
 {
