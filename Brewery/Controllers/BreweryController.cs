@@ -17,14 +17,19 @@ public class BreweryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Domain.Brewery?>> Get()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult<IEnumerable<Domain.Brewery>>> GetAll()
     {
-        return await _breweryRepository.GetAll();
+        var breweries = await _breweryRepository.GetAll();
+        if (!breweries.Any()) return NoContent();
+        return Ok(breweries);
     }
 
     // GET api/<BreweryController>/5
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetAsync(int id)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Domain.Brewery>> GetAsync(int id)
     {
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return NotFound(id);
@@ -33,7 +38,8 @@ public class BreweryController : ControllerBase
 
     // POST api/<BreweryController>
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Domain.Brewery brewery)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<ActionResult> Post([FromBody] Domain.Brewery brewery)
     {
         await _breweryRepository.Add(brewery);
         return Created("api/[controller]", brewery);
@@ -41,7 +47,10 @@ public class BreweryController : ControllerBase
 
     // POST api/<BreweryController>
     [HttpPost("{id}")]
-    public async Task<IActionResult> AddBeer(int id, [FromBody] Domain.Beer beer)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<int>> AddBeer(int id, [FromBody] Domain.Beer beer)
     {
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return NotFound(id);
@@ -52,9 +61,16 @@ public class BreweryController : ControllerBase
 
     // PUT api/<BreweryController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(int id, [FromBody] Domain.Brewery brewery)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Domain.Brewery>> Put(int id, [FromBody] Domain.Brewery brewery)
     {
+        var existingBrewery = await _breweryRepository.GetById(id);
+        if (existingBrewery == null) return NotFound(id);
+
         await _breweryRepository.Update(brewery);
-        return Ok(brewery);
+        var updatedBrewery = await _breweryRepository.GetById(id);
+
+        return Ok(updatedBrewery);
     }
 }
