@@ -55,6 +55,7 @@ public class BreweryController : ControllerBase
     {
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return NotFound(id);
+        if (brewery.Beers.Any(b => b.Name == beer.Name)) return Conflict("Beer already exists");
         brewery.Beers.Add(beer);
         await _breweryRepository.Update(brewery);
         return Ok(brewery);
@@ -69,7 +70,7 @@ public class BreweryController : ControllerBase
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return BadRequest("Invalid Brewery id");
         var beer = brewery.Beers.FirstOrDefault(b => b.Id == beerId);
-        if (beer == null) return BadRequest("Invalid Brewery id");
+        if (beer == null) return BadRequest("Invalid Beer id");
 
         brewery.Beers.Remove(beer);
         await _breweryRepository.Update(brewery);

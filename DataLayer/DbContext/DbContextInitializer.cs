@@ -38,9 +38,9 @@ public static class DbContextInitializer
         if (context.Beers.Any()) return true;
         _beers =
         [
-            new Beer { AlcoholContent = 6.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer1" },
-            new Beer { AlcoholContent = 7.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer2" },
-            new Beer { AlcoholContent = 5.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer3" },
+            new Beer { AlcoholContent = 6.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer1", Price = 4.50},
+            new Beer { AlcoholContent = 7.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer2", Price = 5},
+            new Beer { AlcoholContent = 5.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer3", Price = 2},
 
         ];
         foreach (var beer in _beers)
