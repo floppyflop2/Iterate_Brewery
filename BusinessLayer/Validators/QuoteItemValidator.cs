@@ -28,14 +28,18 @@ namespace BusinessLayer.Validators
                 var saler = await wholesalerRepository.GetById(wholesaler.Id);
                 var stock = saler.Stocks.FirstOrDefault(stock => stock.BeerId == beerId);
                 return stock != null;
-            }).WithMessage("The beer must be sold by the wholesaler");
-
-            RuleFor(x => x).MustAsync(async (quantity, cancellation) =>
+            }).WithMessage("The beer must be sold by the wholesaler")
+                .DependentRules(() =>
             {
-                var saler = await wholesalerRepository.GetById(wholesaler.Id);
-                var stock = saler!.Stocks.FirstOrDefault(stock => stock.BeerId == beerId);
-                return stock!.Quantity >= quantity.Quantity;
-            }).WithMessage("The quantity must be less than or equal to the stock");
+                RuleFor(x => x).MustAsync(async (quantity, cancellation) =>
+                {
+                    var saler = await wholesalerRepository.GetById(wholesaler.Id);
+                    var stock = saler!.Stocks.FirstOrDefault(stock => stock.BeerId == beerId);
+                    return stock!.Quantity >= quantity.Quantity;
+                }).WithMessage("The quantity must be less than or equal to the stock");
+            });
+
+
 
         }
     }

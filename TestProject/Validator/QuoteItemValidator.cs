@@ -14,36 +14,17 @@ namespace UnitTests.Validator
         private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
         private readonly Mock<IBeerRepository> _beerRepositoryMock;
         private readonly Wholesaler _wholesaler;
-        private readonly int _beerId = 1;
+        private readonly int _beerId;
         private readonly Beer _testBeer;
 
         public QuoteItemValidatorTest()
         {
             _wholesalerRepositoryMock = new Mock<IWholesalerRepository>();
             _beerRepositoryMock = new Mock<IBeerRepository>();
-            _wholesaler = new Wholesaler
-            {
-                Id = 1,
-                Name = "Name",
-            };
-
-            _testBeer = new Beer
-            {
-                Id = 1,
-                Name = "Test Beer",
-                Brewery = new Domain.Brewery { Id = 1, Name = "Test Brewery" },
-            };
-
-            var stock =
-                new WholesalerStock
-                {
-                    BeerId = _beerId,
-                    Quantity = 100,
-                    Wholesaler = _wholesaler,
-                    Beer = _testBeer
-                };
-            _wholesaler.Stocks.Add(stock);
-
+            _testBeer = FakeDataFactory.Beers[0];
+            _beerId = _testBeer.Id;
+            _wholesaler = FakeDataFactory.GetFakeWholesaler();
+            _wholesalerRepositoryMock.Setup(repo => repo.GetById(_wholesaler.Id)).ReturnsAsync(_wholesaler);
             _validator = new QuoteItemValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object, _beerId, _wholesaler);
         }
 
@@ -53,7 +34,7 @@ namespace UnitTests.Validator
             // Arrange
             var quoteItem = new QuoteItem { BeerId = _beerId, Quantity = 10 };
             _beerRepositoryMock.Setup(repo => repo.GetById(_beerId)).ReturnsAsync((Beer)null!);
-
+            _wholesalerRepositoryMock.Setup(repo => repo.GetById(_wholesaler.Id)).ReturnsAsync(_wholesaler);
             // Act
             var result = await _validator.TestValidateAsync(quoteItem);
 
@@ -67,7 +48,7 @@ namespace UnitTests.Validator
         {
             // Arrange
             var quoteItem = new QuoteItem { BeerId = _beerId, Quantity = 10 };
-            _beerRepositoryMock.Setup(repo => repo.GetById(_beerId)).ReturnsAsync(new Beer());
+            _beerRepositoryMock.Setup(repo => repo.GetById(_beerId)).ReturnsAsync(_testBeer);
 
             // Act
             var result = await _validator.TestValidateAsync(quoteItem);
@@ -111,7 +92,8 @@ namespace UnitTests.Validator
             _wholesalerRepositoryMock.Setup(repo => repo.GetById(_wholesaler.Id)).ReturnsAsync(new Wholesaler
             {
                 Id = _wholesaler.Id,
-                Stocks = new List<WholesalerStock>()
+                Stocks = new List<WholesalerStock>(),
+                Name = "Name"
             });
 
             // Act
@@ -155,7 +137,7 @@ namespace UnitTests.Validator
         public async Task Should_Not_Have_Error_When_Quantity_Is_Less_Than_Or_Equal_To_Stock()
         {
             // Arrange
-            var quoteItem = new QuoteItem { BeerId = _beerId, Quantity = 50 };
+            var quoteItem = new QuoteItem { BeerId = _beerId, Quantity = 10 };
             _wholesalerRepositoryMock.Setup(repo => repo.GetById(_wholesaler.Id)).ReturnsAsync(_wholesaler);
 
             // Act
