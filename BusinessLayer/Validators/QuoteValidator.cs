@@ -5,7 +5,7 @@ using FluentValidation;
 namespace BusinessLayer.Validators;
 public class QuoteValidator : AbstractValidator<Quote>
 {
-    public QuoteValidator(IWholesalerRepository wholesalerRepository, IBeerRepository beerRepository, Wholesaler wholesaler)
+    public QuoteValidator(IWholesalerRepository wholesalerRepository, IBeerRepository beerRepository)
     {
 
         RuleFor(x => x.Wholesaler).NotNull().WithMessage("The Wholesaler cannot be empty")
@@ -18,7 +18,7 @@ public class QuoteValidator : AbstractValidator<Quote>
         RuleForEach(x => x.OrderItems)
             .ChildRules(child =>
             {
-                child.RuleForEach(item => new QuoteItemValidator(wholesalerRepository, beerRepository, item.BeerId, wholesaler));
+                child.RuleForEach(item => new QuoteItemValidator(wholesalerRepository, beerRepository));
             });
     }
 }

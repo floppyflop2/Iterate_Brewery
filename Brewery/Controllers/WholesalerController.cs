@@ -9,12 +9,10 @@ namespace Brewery.Controllers;
 public class WholesalerController : ControllerBase
 {
     private readonly IWholesalerRepository _wholesalerRepository;
-    private readonly ILogger<WholesalerController> _logger;
 
-    public WholesalerController(IWholesalerRepository wholesalerRepository, ILogger<WholesalerController> logger)
+    public WholesalerController(IWholesalerRepository wholesalerRepository)
     {
         _wholesalerRepository = wholesalerRepository;
-        _logger = logger;
     }
 
     [HttpGet]
@@ -37,15 +35,15 @@ public class WholesalerController : ControllerBase
         return Ok(wholesaler);
     }
 
-    // POST api/<WholesalerController>/{id}/stock
-    [HttpPost("{id}/stock")]
+    // POST api/<WholesalerController>/{wholesalerId}/stock
+    [HttpPost("{wholesalerId}/stock")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<int>> AddBeer(int id, [FromBody] WholesalerStock stock)
+    public async Task<ActionResult<int>> AddStock(int wholesalerId, [FromBody] WholesalerStock stock)
     {
-        var wholesaler = await _wholesalerRepository.GetById(id);
-        if (wholesaler == null) return NotFound(id);
+        var wholesaler = await _wholesalerRepository.GetById(wholesalerId);
+        if (wholesaler == null) return NotFound(wholesalerId);
         wholesaler.Stocks.Add(stock);
         await _wholesalerRepository.Update(wholesaler);
         return Ok(wholesaler);

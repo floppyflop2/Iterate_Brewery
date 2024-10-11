@@ -1,7 +1,11 @@
 using System.Text.Json.Serialization;
+using BusinessLayer.Validators;
 using DataLayer;
 using DataLayer.DbContext;
 using DataLayer.Interface;
+using Domain;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +27,11 @@ builder.Services.AddScoped<IBeerRepository, BeerRepository>();
 builder.Services.AddScoped<IBreweryRepository, BreweryRepository>();
 builder.Services.AddScoped<IWholesalerRepository, WholesalerRepository>();
 builder.Services.AddScoped<IWholesalerStockRepository, WholesalerStockRepository>();
+
+builder.Services.AddScoped<IValidator<Quote>,QuoteValidator>();
+builder.Services.AddScoped<IValidator<QuoteItem>, QuoteItemValidator>();
+builder.Services.AddScoped<IValidator<Wholesaler>, QuoteWholesalerValidator>();
+builder.Services.AddScoped<IValidator<Beer>, BeerValidator>();
 
 var app = builder.Build();
 

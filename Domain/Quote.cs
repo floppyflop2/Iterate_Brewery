@@ -8,7 +8,7 @@ namespace Domain
 {
     public class Quote
     {
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         public required Wholesaler Wholesaler { get; set; }
         public List<QuoteItem> OrderItems { get; set; } = new List<QuoteItem>();
 

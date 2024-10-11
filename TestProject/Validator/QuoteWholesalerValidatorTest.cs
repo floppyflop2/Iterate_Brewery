@@ -19,7 +19,7 @@ public class QuoteWholesalerValidatorTest
         _beerRepositoryMock = new Mock<IBeerRepository>();
         _wholesaler = new Wholesaler { Id = 1, Name = "Test Wholesaler" };
 
-        _validator = new QuoteValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object, _wholesaler);
+        _validator = new QuoteValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object);
     }
 
     [Fact]

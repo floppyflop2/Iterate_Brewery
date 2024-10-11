@@ -18,7 +18,7 @@ public class QuoteValidatorTest
         _wholesalerRepositoryMock = new Mock<IWholesalerRepository>();
         _beerRepositoryMock = new Mock<IBeerRepository>();
         _wholesaler = FakeDataFactory.GetFakeWholesaler();
-        _validator = new QuoteValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object, _wholesaler);
+        _validator = new QuoteValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object);
     }
 
     [Fact]
@@ -43,8 +43,8 @@ public class QuoteValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10 },
-                new QuoteItem { BeerId = 1, Quantity = 5 }
+                new QuoteItem { BeerId = 1, Quantity = 10, WholeSalerId = 1},
+                new QuoteItem { BeerId = 1, Quantity = 5, WholeSalerId = 1}
             }
         };
 
@@ -86,8 +86,8 @@ public class QuoteValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10 },
-                new QuoteItem { BeerId = 2, Quantity = 5 }
+                new QuoteItem { BeerId = 1, Quantity = 10, WholeSalerId = _wholesaler.Id },
+                new QuoteItem { BeerId = 2, Quantity = 5, WholeSalerId = _wholesaler.Id }
             }
         };
         _beerRepositoryMock.Setup(repo => repo.GetById(It.IsAny<int>())).ReturnsAsync(FakeDataFactory.Beers.First);
@@ -98,7 +98,7 @@ public class QuoteValidatorTest
         // Assert
         foreach (var item in quote.OrderItems)
         {
-            var itemValidator = new QuoteItemValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object, item.BeerId, _wholesaler);
+            var itemValidator = new QuoteItemValidator(_wholesalerRepositoryMock.Object, _beerRepositoryMock.Object);
             var itemResult = await itemValidator.TestValidateAsync(item);
             itemResult.ShouldNotHaveAnyValidationErrors();
         }

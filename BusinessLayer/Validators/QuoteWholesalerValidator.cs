@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Constants;
 using DataLayer.Interface;
 using Domain;
 using FluentValidation;
@@ -18,6 +19,6 @@ public class QuoteWholesalerValidator : AbstractValidator<Wholesaler>
         {
             var wholesaler = await wholesalerRepository.GetById(id);
             return wholesaler != null;
-        }).WithMessage("The wholesaler must exist");
+        }).WithMessage(ErrorMessages.WholesalerMustExist);
     }
 }
