@@ -3,44 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessLayer.Interface;
 using Constants;
 using DataLayer.Interface;
 using Domain;
 
 namespace BusinessLayer
 {
-    public class QuoteService
+    public class QuoteService(
+        IWholesalerRepository wholesalerRepository)
+        : IQuoteService
     {
-        private readonly IWholesalerRepository _wholesalerRepository;
-        private readonly IBeerRepository _beerRepository;
-        private readonly IWholesalerStockRepository _wholesalerStockRepository;
-
-        public QuoteService(IWholesalerRepository wholesalerRepository, IBeerRepository beerRepository, IWholesalerStockRepository wholesalerStockRepository)
+        private readonly IWholesalerRepository _wholesalerRepository = wholesalerRepository;
+        public async Task<Quote> CreateQuote(List<QuoteItem> order, int wholesalerId)
         {
-            _wholesalerRepository = wholesalerRepository;
-            _beerRepository = beerRepository;
-            _wholesalerStockRepository = wholesalerStockRepository;
-        }
-
-        public async Task<Quote> CreateQuote(List<QuoteItem> order, Wholesaler wholesaler)
-        {
-            var seller = await _wholesalerRepository.GetById(wholesaler.Id);
-            if (seller == null)
+            var wholesaler = await wholesalerRepository.GetById(wholesalerId);
+            if (wholesaler == null)
                 throw new ArgumentException(ErrorMessages.WholesalerMustExist);
 
             foreach (var item in order)
             {
-                seller.Stocks.FirstOrDefault(stock => stock.BeerId == item.BeerId)!.Quantity -= item.Quantity;
+                wholesaler.Stocks.FirstOrDefault(stock => stock.BeerId == item.BeerId)!.Quantity -= item.Quantity;
             }
-            await _wholesalerRepository.Update(seller);
+            await _wholesalerRepository.Update(wholesaler);
 
             var quote = new Quote
             {
-                Wholesaler = seller,
-                OrderItems = order
+                Wholesaler = wholesaler,
+                OrderItems = order,
+                Price = CalculatePrice(order, wholesaler)
             };
-
-            quote.Price = CalculatePrice(order, wholesaler);
 
             return quote;
         }

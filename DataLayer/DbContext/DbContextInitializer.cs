@@ -23,7 +23,7 @@ public static class DbContextInitializer
         if (context.Breweries.Any()) return true;
 
         _breweries = [
-            new Brewery { Name = "Brewery 1" }, new Brewery { Name = "Brewery 2" }, new Brewery { Name = "Brewery 3" }
+            new Brewery { Id = 1,Name = "Brewery 1" }, new Brewery {Id=2, Name = "Brewery 2" }, new Brewery {Id=3, Name = "Brewery 3" }
         ];
         foreach (var brewery in _breweries)
         {
@@ -38,9 +38,9 @@ public static class DbContextInitializer
         if (context.Beers.Any()) return true;
         _beers =
         [
-            new Beer { AlcoholContent = 6.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer1", Price = 4.50},
-            new Beer { AlcoholContent = 7.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer2", Price = 5},
-            new Beer { AlcoholContent = 5.0, Brewery = _breweries[random.Next(1, _breweries.Count)], Name = "Beer3", Price = 2},
+            new Beer { Id=1, AlcoholContent = 6.0, Brewery = GetRandomBrewery(), Name = "Beer1", Price = 4.50},
+            new Beer { Id=2, AlcoholContent = 7.0, Brewery = GetRandomBrewery(), Name = "Beer2", Price = 5},
+            new Beer { Id=3, AlcoholContent = 5.0, Brewery = GetRandomBrewery(), Name = "Beer3", Price = 2},
 
         ];
         foreach (var beer in _beers)
@@ -58,28 +58,31 @@ public static class DbContextInitializer
         [
             new Wholesaler
             {
+                Id=1,
                 Name = "WholeSalers 1",
                 Stocks = new List<WholesalerStock>()
             },
 
             new Wholesaler
             {
+                Id=2,
                 Name = "WholeSalers 2",
                 Stocks = new List<WholesalerStock>()
             },
 
             new Wholesaler
             {
+                Id=3,
                 Name = "WholeSalers 3",
                 Stocks = new List<WholesalerStock>()
-
             }
         ];
         foreach (var wholesaler in _wholesalers)
         {
             wholesaler.Stocks.Add(new WholesalerStock { Beer = GetRandomBeer(), Quantity = random.Next(1, 100), Wholesaler = wholesaler });
+            context.Wholesalers.Add(wholesaler);
         }
-
+        context.SaveChanges();
         return false;
     }
 

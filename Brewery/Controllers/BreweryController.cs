@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using DataLayer.Interface;
 using Domain;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brewery.Controllers;
@@ -10,11 +12,13 @@ public class BreweryController : ControllerBase
 {
     private readonly IBreweryRepository _breweryRepository;
     private readonly ILogger<BreweryController> _logger;
+    private readonly IValidator<Beer> _beerValidator;
 
-    public BreweryController(IBreweryRepository breweryRepository, ILogger<BreweryController> logger)
+    public BreweryController(IBreweryRepository breweryRepository, ILogger<BreweryController> logger, IValidator<Beer> beerValidator)
     {
         _breweryRepository = breweryRepository;
         _logger = logger;
+        _beerValidator = beerValidator;
     }
 
     [HttpGet]
@@ -51,26 +55,33 @@ public class BreweryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<int>> AddBeer(int id, [FromBody] Domain.Beer beer)
+    public async Task<ActionResult<int>> AddBeer(int id, [FromBody] Beer beer)
     {
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return NotFound(id);
-        if (brewery.Beers.Any(b => b.Name == beer.Name)) return Conflict("Beer already exists");
+
+        ValidationResult results = await _beerValidator.ValidateAsync(beer);
+
+        if (!results.IsValid)
+        {
+            return BadRequest(results.Errors);
+        }
+
         brewery.Beers.Add(beer);
         await _breweryRepository.Update(brewery);
         return Ok(brewery);
     }
 
     // POST api/<BreweryController>
-    [HttpPost("{id}/beers/{beerId}")]
+    [HttpPost("{breweryId}/beers/{beerId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> DeleteBeer(int id, int beerId)
+    public async Task<ActionResult<int>> DeleteBeer(int breweryId, int beerId)
     {
-        var brewery = await _breweryRepository.GetById(id);
-        if (brewery == null) return BadRequest("Invalid Brewery id");
+        var brewery = await _breweryRepository.GetById(breweryId);
+        if (brewery == null) return BadRequest("Invalid Brewery breweryId");
         var beer = brewery.Beers.FirstOrDefault(b => b.Id == beerId);
-        if (beer == null) return BadRequest("Invalid Beer id");
+        if (beer == null) return BadRequest("Invalid Beer Id");
 
         brewery.Beers.Remove(beer);
         await _breweryRepository.Update(brewery);
