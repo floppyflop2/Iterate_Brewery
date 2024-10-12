@@ -1,14 +1,13 @@
-﻿using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Brewery;
+﻿using Brewery;
 
 namespace IntegrationTests;
 
-public partial class BreweryApiTest : IClassFixture<CustomWebApplicationFactory<Brewery.Program>>
+public partial class BreweryApiTest : IClassFixture<CustomWebApplicationFactory<Program>>
 {
-    private readonly CustomWebApplicationFactory<Brewery.Program> _factory;
+    private readonly CustomWebApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
 
-    public BreweryApiTest(CustomWebApplicationFactory<Brewery.Program> factory)
+    public BreweryApiTest(CustomWebApplicationFactory<Program> factory)
     {
         _factory = factory;
         _httpClient = _factory.CreateClient();

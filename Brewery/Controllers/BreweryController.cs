@@ -1,20 +1,20 @@
-﻿using System.Net;
-using DataLayer.Interface;
+﻿using DataLayer.Interface;
 using Domain;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brewery.Controllers;
+
 [Route("[controller]")]
 [ApiController]
 public class BreweryController : ControllerBase
 {
+    private readonly IValidator<Beer> _beerValidator;
     private readonly IBreweryRepository _breweryRepository;
     private readonly ILogger<BreweryController> _logger;
-    private readonly IValidator<Beer> _beerValidator;
 
-    public BreweryController(IBreweryRepository breweryRepository, ILogger<BreweryController> logger, IValidator<Beer> beerValidator)
+    public BreweryController(IBreweryRepository breweryRepository, ILogger<BreweryController> logger,
+        IValidator<Beer> beerValidator)
     {
         _breweryRepository = breweryRepository;
         _logger = logger;
@@ -60,12 +60,9 @@ public class BreweryController : ControllerBase
         var brewery = await _breweryRepository.GetById(id);
         if (brewery == null) return NotFound(id);
 
-        ValidationResult results = await _beerValidator.ValidateAsync(beer);
+        var results = await _beerValidator.ValidateAsync(beer);
 
-        if (!results.IsValid)
-        {
-            return BadRequest(results.Errors);
-        }
+        if (!results.IsValid) return BadRequest(results.Errors);
 
         brewery.Beers.Add(beer);
         await _breweryRepository.Update(brewery);

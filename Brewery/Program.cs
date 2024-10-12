@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BusinessLayer;
 using BusinessLayer.Interface;
 using BusinessLayer.Validators;
@@ -7,7 +8,6 @@ using DataLayer.Interface;
 using Domain;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,5 +62,7 @@ app.Run();
 //This has to be added to be referenced in the test project for the factory
 namespace Brewery
 {
-    public partial class Program { }
+    public class Program
+    {
+    }
 }

@@ -3,19 +3,15 @@ using Constants;
 using DataLayer.Interface;
 using Domain;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitTests;
 
 public class QuoteServiceTest
 {
-    private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
     private readonly QuoteService _quoteService;
     private readonly Wholesaler _wholesaler;
+    private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
+
     public QuoteServiceTest()
     {
         _wholesalerRepositoryMock = new Mock<IWholesalerRepository>();
@@ -26,8 +22,18 @@ public class QuoteServiceTest
             Name = "Test Wholesaler",
             Stocks = new List<WholesalerStock>
             {
-                new WholesalerStock { BeerId = 1, Quantity = 20, Beer = new Beer { Id = 1, Name = "Beer1",Price = 5, Brewery = FakeDataFactory.Brewery}, Wholesaler = FakeDataFactory.GetFakeWholesaler()},
-                new WholesalerStock { BeerId = 2, Quantity = 30, Beer = new Beer { Id = 2, Name = "Beer2",Price = 10, Brewery = FakeDataFactory.Brewery }, Wholesaler = FakeDataFactory.GetFakeWholesaler()}
+                new()
+                {
+                    BeerId = 1, Quantity = 20,
+                    Beer = new Beer { Id = 1, Name = "Beer1", Price = 5, Brewery = FakeDataFactory.Brewery },
+                    Wholesaler = FakeDataFactory.GetFakeWholesaler()
+                },
+                new()
+                {
+                    BeerId = 2, Quantity = 30,
+                    Beer = new Beer { Id = 2, Name = "Beer2", Price = 10, Brewery = FakeDataFactory.Brewery },
+                    Wholesaler = FakeDataFactory.GetFakeWholesaler()
+                }
             }
         };
     }
@@ -39,7 +45,8 @@ public class QuoteServiceTest
         _wholesalerRepositoryMock.Setup(repo => repo.GetById(It.IsAny<int>())).ReturnsAsync((Wholesaler)null);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _quoteService.CreateQuote(new List<QuoteItem>(), 1));
+        var exception =
+            await Assert.ThrowsAsync<ArgumentException>(() => _quoteService.CreateQuote(new List<QuoteItem>(), 1));
         Assert.Equal(ErrorMessages.WholesalerMustExist, exception.Message);
     }
 
@@ -52,8 +59,8 @@ public class QuoteServiceTest
 
         var order = new List<QuoteItem>
         {
-            new QuoteItem { BeerId = 1, Quantity = 5 },
-            new QuoteItem { BeerId = 2, Quantity = 10 }
+            new() { BeerId = 1, Quantity = 5 },
+            new() { BeerId = 2, Quantity = 10 }
         };
 
         // Act
@@ -74,8 +81,8 @@ public class QuoteServiceTest
 
         var order = new List<QuoteItem>
         {
-            new QuoteItem { BeerId = 1, Quantity = 5 },
-            new QuoteItem { BeerId = 2, Quantity = 10 }
+            new() { BeerId = 1, Quantity = 5 },
+            new() { BeerId = 2, Quantity = 10 }
         };
 
         // Act
@@ -94,8 +101,8 @@ public class QuoteServiceTest
 
         var order = new List<QuoteItem>
         {
-            new QuoteItem { BeerId = 1, Quantity = 15 },
-            new QuoteItem { BeerId = 2, Quantity = 10 }
+            new() { BeerId = 1, Quantity = 15 },
+            new() { BeerId = 2, Quantity = 10 }
         };
 
         // Act
@@ -105,5 +112,3 @@ public class QuoteServiceTest
         Assert.Equal(140, quote.Price); // (15*5 + 10*10) * 0.9 = 140
     }
 }
-
-

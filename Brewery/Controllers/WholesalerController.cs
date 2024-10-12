@@ -2,10 +2,10 @@
 using DataLayer.Interface;
 using Domain;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brewery.Controllers;
+
 [Route("[controller]")]
 [ApiController]
 public class WholesalerController(
@@ -14,11 +14,10 @@ public class WholesalerController(
     IQuoteService quoteService)
     : ControllerBase
 {
-
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult<IEnumerable<Domain.Wholesaler>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Wholesaler>>> GetAll()
     {
         var wholesalers = await wholesalerRepository.GetAll();
         if (!wholesalers.Any()) return NoContent();
@@ -28,7 +27,7 @@ public class WholesalerController(
     // GET api/<WholesalerController>/5
     [HttpGet("{wholesalerId}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Domain.Wholesaler>> GetAsync(int wholesalerId)
+    public async Task<ActionResult<Wholesaler>> GetAsync(int wholesalerId)
     {
         var wholesaler = await wholesalerRepository.GetById(wholesalerId);
         if (wholesaler == null) return NotFound(wholesalerId);
@@ -72,12 +71,9 @@ public class WholesalerController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<int>> CreateQuote(Quote quote, int wholesalerId)
     {
-        ValidationResult results = await quoteValidator.ValidateAsync(quote);
+        var results = await quoteValidator.ValidateAsync(quote);
 
-        if (!results.IsValid)
-        {
-            return BadRequest(results.Errors);
-        }
+        if (!results.IsValid) return BadRequest(results.Errors);
         var createdQuote = await quoteService.CreateQuote(quote.OrderItems, wholesalerId);
         return Ok(createdQuote);
     }

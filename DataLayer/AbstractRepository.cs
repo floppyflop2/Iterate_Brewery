@@ -8,6 +8,12 @@ namespace DataLayer;
 
 public class AbstractRepository<T> : IAbstractRepository<T> where T : BaseEntity
 {
+    public AbstractRepository(BreweryDbContext breweryDbContext)
+    {
+        _breweryDbContext = breweryDbContext;
+        _entities = _breweryDbContext.Set<T>();
+    }
+
     #region Fields
 
     private readonly BreweryDbContext _breweryDbContext;
@@ -15,17 +21,11 @@ public class AbstractRepository<T> : IAbstractRepository<T> where T : BaseEntity
 
     #endregion
 
-    public AbstractRepository(BreweryDbContext breweryDbContext)
-    {
-        _breweryDbContext = breweryDbContext;
-        _entities = _breweryDbContext.Set<T>();
-    }
-
     #region Public Methods
 
     public async Task<T?> GetById(int id)
     {
-        DbSet<T>? baseEntities = _breweryDbContext.Set<T>();
+        var baseEntities = _breweryDbContext.Set<T>();
         return await baseEntities.FindAsync(id);
     }
 

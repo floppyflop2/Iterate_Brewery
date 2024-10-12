@@ -5,18 +5,18 @@ namespace DataLayer.DbContext;
 
 public class BreweryDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
-    public DbSet<Brewery> Breweries { get; set; }
-    public DbSet<Beer> Beers { get; set; }
-    public DbSet<Wholesaler> Wholesalers { get; set; }
-    public DbSet<WholesalerStock> WholesalerStocks { get; set; }
-
-    public BreweryDbContext() : base()
+    public BreweryDbContext()
     {
     }
 
     public BreweryDbContext(DbContextOptions<BreweryDbContext> options) : base(options)
     {
     }
+
+    public DbSet<Brewery> Breweries { get; set; }
+    public DbSet<Beer> Beers { get; set; }
+    public DbSet<Wholesaler> Wholesalers { get; set; }
+    public DbSet<WholesalerStock> WholesalerStocks { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

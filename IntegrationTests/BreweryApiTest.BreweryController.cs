@@ -1,6 +1,5 @@
-﻿namespace IntegrationTests
+﻿namespace IntegrationTests;
+
+public partial class BreweryApiTest
 {
-    public partial class BreweryApiTest
-    {
-    }
 }

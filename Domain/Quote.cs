@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Domain;
 
-namespace Domain
+public class Quote
 {
-    public class Quote
-    {
-        public double Price { get; set; }
-        public required Wholesaler Wholesaler { get; set; }
-        public List<QuoteItem> OrderItems { get; set; } = new List<QuoteItem>();
-
-    }
+    public double Price { get; set; }
+    public required Wholesaler Wholesaler { get; set; }
+    public List<QuoteItem> OrderItems { get; set; } = new();
 }
