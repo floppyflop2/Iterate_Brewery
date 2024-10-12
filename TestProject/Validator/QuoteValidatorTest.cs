@@ -1,4 +1,5 @@
 using BusinessLayer.Validators;
+using Constants;
 using DataLayer.Interface;
 using Domain;
 using FluentValidation.TestHelper;
@@ -8,10 +9,10 @@ namespace UnitTests.Validator;
 
 public class QuoteValidatorTest
 {
-    private readonly QuoteValidator _validator;
-    private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
     private readonly Mock<IBeerRepository> _beerRepositoryMock;
+    private readonly QuoteValidator _validator;
     private readonly Wholesaler _wholesaler;
+    private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
 
     public QuoteValidatorTest()
     {
@@ -43,8 +44,8 @@ public class QuoteValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10, WholeSalerId = 1},
-                new QuoteItem { BeerId = 1, Quantity = 5, WholeSalerId = 1}
+                new() { BeerId = 1, Quantity = 10, WholeSalerId = 1 },
+                new() { BeerId = 1, Quantity = 5, WholeSalerId = 1 }
             }
         };
 
@@ -53,7 +54,7 @@ public class QuoteValidatorTest
 
         // Assert
         result.ShouldHaveValidationErrorFor(q => q.OrderItems)
-            .WithErrorMessage("There can't be any duplicate in the order");
+            .WithErrorMessage(ErrorMessages.ThereCantBeAnyDuplicateInTheOrder);
     }
 
     [Fact]
@@ -65,8 +66,8 @@ public class QuoteValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10 },
-                new QuoteItem { BeerId = 2, Quantity = 5 }
+                new() { BeerId = 1, Quantity = 10 },
+                new() { BeerId = 2, Quantity = 5 }
             }
         };
 
@@ -86,8 +87,8 @@ public class QuoteValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10, WholeSalerId = _wholesaler.Id },
-                new QuoteItem { BeerId = 2, Quantity = 5, WholeSalerId = _wholesaler.Id }
+                new() { BeerId = 1, Quantity = 10, WholeSalerId = _wholesaler.Id },
+                new() { BeerId = 2, Quantity = 5, WholeSalerId = _wholesaler.Id }
             }
         };
         _beerRepositoryMock.Setup(repo => repo.GetById(It.IsAny<int>())).ReturnsAsync(FakeDataFactory.Beers.First);

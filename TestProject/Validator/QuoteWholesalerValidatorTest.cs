@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Validators;
+using Constants;
 using DataLayer.Interface;
 using Domain;
 using FluentValidation.TestHelper;
@@ -8,10 +9,10 @@ namespace UnitTests.Validator;
 
 public class QuoteWholesalerValidatorTest
 {
-    private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
     private readonly Mock<IBeerRepository> _beerRepositoryMock;
-    private readonly Wholesaler _wholesaler;
     private readonly QuoteValidator _validator;
+    private readonly Wholesaler _wholesaler;
+    private readonly Mock<IWholesalerRepository> _wholesalerRepositoryMock;
 
     public QuoteWholesalerValidatorTest()
     {
@@ -28,7 +29,7 @@ public class QuoteWholesalerValidatorTest
         var quote = new Quote { Wholesaler = null };
         var result = await _validator.TestValidateAsync(quote);
         result.ShouldHaveValidationErrorFor(q => q.Wholesaler)
-            .WithErrorMessage("The Wholesaler cannot be empty");
+            .WithErrorMessage(ErrorMessages.WholesalerCannotBeEmpty);
     }
 
     [Fact]
@@ -39,13 +40,13 @@ public class QuoteWholesalerValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10 },
-                new QuoteItem { BeerId = 1, Quantity = 5 }
+                new() { BeerId = 1, Quantity = 10 },
+                new() { BeerId = 1, Quantity = 5 }
             }
         };
         var result = await _validator.TestValidateAsync(quote);
         result.ShouldHaveValidationErrorFor(q => q.OrderItems)
-            .WithErrorMessage("There can't be any duplicate in the order");
+            .WithErrorMessage(ErrorMessages.ThereCantBeAnyDuplicateInTheOrder);
     }
 
     [Fact]
@@ -56,8 +57,8 @@ public class QuoteWholesalerValidatorTest
             Wholesaler = _wholesaler,
             OrderItems = new List<QuoteItem>
             {
-                new QuoteItem { BeerId = 1, Quantity = 10 },
-                new QuoteItem { BeerId = 2, Quantity = 5 }
+                new() { BeerId = 1, Quantity = 10 },
+                new() { BeerId = 2, Quantity = 5 }
             }
         };
         var result = await _validator.TestValidateAsync(quote);
@@ -74,7 +75,7 @@ public class QuoteWholesalerValidatorTest
         var result = await validator.TestValidateAsync(quote.Wholesaler);
 
         result.ShouldHaveValidationErrorFor(w => w.Id)
-            .WithErrorMessage("The wholesaler must exist");
+            .WithErrorMessage(ErrorMessages.WholesalerMustExist);
     }
 
     [Fact]
