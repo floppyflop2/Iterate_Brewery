@@ -1,0 +1,58 @@
+﻿@page "/wholesalers-overview"
+@attribute [StreamRendering(true)]
+
+<h3>WholesalersOverview</h3>
+
+
+<table class="table table-light">
+    <thead class="table-primary">
+        <tr>
+            <th>Wholesaler Id</th>
+            <th>WholesalerName </th>
+            <th>Wholesaler stock </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var wholesaler in Wholesalers)
+        {
+            <tr>
+                <td>@wholesaler.Id</td>
+                <td>@wholesaler.Name</td>
+                <td><a href="@($"wholesalerDetails/{@wholesaler.Id}")" class="btn btn-outline-primary btn-sm mb-1">Details</a></td>
+            <tr class="sub-row">
+                if(wholesaler.Stocks != null)
+                {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Beer name </th>
+                            <th>Beer price </th>
+                            <th>Alcohol content </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                            @foreach (var beer in wholesaler.Stocks)
+                            {
+                            <tr>
+                                <td>@beer.Beer.Name</td>
+                                <td>@beer.Quantity</td>
+                                <a href="@($"beerDetail/{@beer.Id}")" class="btn btn-outline-primary btn-sm mb-1">Details</a>
+                            </tr>
+                            }
+                    </tbody>
+                </table>
+            </tr>
+
+            }
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+@code {
+
+}

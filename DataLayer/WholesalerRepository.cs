@@ -16,4 +16,5 @@ public class WholesalerRepository(BreweryDbContext breweryDbContext)
             .Include(b => b.Stocks).ThenInclude(s => s.Beer).FirstOrDefaultAsync(b => b.Id == id);
         return wholesalers;
     }
+
 }

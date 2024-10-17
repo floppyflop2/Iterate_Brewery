@@ -1,0 +1,32 @@
+﻿@page "/beers-overview"
+@attribute [StreamRendering(true)]
+
+<h1>BeersOverview</h1>
+
+
+<table class="table table-light">
+    <thead class="table-primary">
+        <tr>
+            <th>Beer name </th>
+            <th>Beer price </th>
+            <th>Alcohol content </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var beer in Beers)
+        {
+            <tr>
+              
+                <td>@beer.Name</td>
+                <td>@beer.Price</td>
+                <td>@beer.AlcoholContent</td>
+                <td><a href="@($"beerDetail/{@beer.Id}")" class="btn btn-outline-primary btn-sm mb-1">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+}

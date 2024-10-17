@@ -1,0 +1,27 @@
+﻿@page "/beerDetail/{BeerId:int}"
+@rendermode InteractiveServer
+
+<h3>BeerDetail</h3>
+<table class="table table-light">
+    <thead class="table-primary">
+    <tr>
+        <th>Beer ID </th>
+        <th>Beer name </th>
+        <th>Beer price </th>
+        <th>Alcohol content </th>
+        <th>Brewery Name </th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Beer.Id</td>
+            <td>@Beer.Name</td>
+            <td>@Beer.Price</td>
+            <td>@Beer.AlcoholContent</td>
+            <td>@Beer.Brewery.Name</td>
+        </tr>
+    </tbody>
+</table>
+@code {
+
+}
